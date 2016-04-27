@@ -23,6 +23,7 @@
             $this->_loader->load('auth');
             $this->_loader->load('controller');
             $this->_loader->load('db');
+            $this->_loader->load('sql');
 
             $this->_url = new Url();
             $this->_auth = new Auth();

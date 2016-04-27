@@ -25,8 +25,16 @@
             }
             return self::$_link;
         }
-        
-        public function sendQuery($sql){
-            return $this->_db->query($sql);
+
+        public function sendQuery(Sql $sql){
+            return $this->_db->query($sql->getSql());
+        }
+
+        /**
+         * @param string $str
+         * @return string
+         */
+        public function escape($str){
+            return $this->_db->real_escape_string($str);
         }
     }
