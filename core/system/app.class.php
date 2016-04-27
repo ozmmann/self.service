@@ -11,6 +11,7 @@
         private $_loader;
         private $_url;
         private $_auth;
+        private $_db;
 
         /**
          * App constructor.
@@ -21,9 +22,11 @@
             $this->_loader->load('lib/url');
             $this->_loader->load('auth');
             $this->_loader->load('controller');
+            $this->_loader->load('db');
 
             $this->_url = new Url();
             $this->_auth = new Auth();
+            $this->_db = Db::getLink();
 
         }
 
@@ -65,6 +68,12 @@
             return $this->_auth;
         }
 
+        /**
+         * @return Db
+         */
+        public function getDb(){
+            return $this->_db;
+        }
         /**
          * @return string
          */

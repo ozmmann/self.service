@@ -14,7 +14,7 @@
             'name' => 'newaddress_db',
             'user' => 'root',
             'password' => '',
-            'prefix' => 'nas'
+            'prefix' => 'nas_'
         ];
 
         const BASE_URL = 'newaddress.local';
