@@ -53,11 +53,4 @@
             }
             return strtolower($path).'.class.php';
         }
-        private function getClassName($path){
-            $separator_pos = strpos($path, '_');
-            if($separator_pos){
-                return ucfirst(strtolower(substr($path, $separator_pos+1)));
-            }
-            return ucfirst(strtolower($path));
-        }
     }
