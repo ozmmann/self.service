@@ -10,14 +10,18 @@
         private static $app = null;
         private $_config;
         private $_loader;
+        private $_url;
 
         /**
          * App constructor.
          */
         private function __construct(){
             global $loader;
-            $this->_loader = $loader;
             $this->_config = new Config();
+            $this->_loader = $loader;
+            $this->_loader->load('lib/url');
+            $this->_url = new Url();
+
         }
 
         /**
@@ -42,5 +46,12 @@
          */
         public function getConfig(){
             return $this->_config;
+        }
+
+        /**
+         * @return Url
+         */
+        public function getUrl(){
+            return $this->_url;
         }
     }
