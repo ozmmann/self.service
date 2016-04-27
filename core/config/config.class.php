@@ -5,7 +5,11 @@
      * main project config
      */
     class Config{
-        public $db = [
+        const CORE_DIR = 'core/';
+        const MAIN_ROLE = 'guest';
+        const ADMIN_ROLE = 'admin';
+
+        const DB = [
             'host' => 'localhost',
             'name' => 'newaddress_db',
             'user' => 'root',
@@ -13,7 +17,8 @@
             'prefix' => 'nas'
         ];
 
-        public $base_url = 'newaddress.local';
-
-        public static $core_dir = 'core/';
+        const BASE_URL = 'newaddress.local';
+        const BASE_CONTROLLER = 'main';
+        const ADMIN_CONTROLLER = 'admin';
+        const ADMIN_URL = 'admin';
     }
