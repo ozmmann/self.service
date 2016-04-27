@@ -12,7 +12,7 @@
          * Loader constructor.
          */
         public function __construct(){
-            $this->_core_dir = Config::$core_dir;
+            $this->_core_dir = Config::CORE_DIR;
         }
         
         /**
@@ -35,7 +35,7 @@
          * @return string
          */
         private function getDir($path){
-            $separator_pos = strpos($path, '_');
+            $separator_pos = strpos($path, '/');
             if($separator_pos){
                 return strtolower(substr($path, 0, $separator_pos)).'/';
             }
@@ -47,7 +47,7 @@
          * @return string
          */
         private function getFile($path){
-            $separator_pos = strpos($path, '_');
+            $separator_pos = strpos($path, '/');
             if($separator_pos){
                 return strtolower(substr($path, $separator_pos+1)).'.class.php';
             }

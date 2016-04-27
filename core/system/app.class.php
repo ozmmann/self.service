@@ -8,19 +8,22 @@
      */
     class App{
         private static $app = null;
-        private $_config;
         private $_loader;
         private $_url;
+        private $_auth;
 
         /**
          * App constructor.
          */
         private function __construct(){
             global $loader;
-            $this->_config = new Config();
             $this->_loader = $loader;
             $this->_loader->load('lib/url');
+            $this->_loader->load('auth');
+            $this->_loader->load('controller');
+
             $this->_url = new Url();
+            $this->_auth = new Auth();
 
         }
 
@@ -53,5 +56,20 @@
          */
         public function getUrl(){
             return $this->_url;
+        }
+
+        /**
+         * @return Auth
+         */
+        public function getAuth(){
+            return $this->_auth;
+        }
+
+        /**
+         * @return string
+         */
+        public function requestMethod(){
+            return $_SERVER['REQUEST_METHOD'];
+
         }
     }
