@@ -21,7 +21,6 @@
          */
         public function load($path){
             $file = $this->_core_dir.$this->getDir($path).$this->getFile($path);
-            $class_name = $this->getClassName($path);
 
             if(file_exists($file)){
                 include_once $file;
@@ -36,9 +35,9 @@
          * @return string
          */
         private function getDir($path){
-            $separator_pos = strpos($path, '/');
+            $separator_pos = strpos($path, '_');
             if($separator_pos){
-                return strtolower(substr($path, 0, $separator_pos));
+                return strtolower(substr($path, 0, $separator_pos)).'/';
             }
             return 'system/';
         }
@@ -48,14 +47,14 @@
          * @return string
          */
         private function getFile($path){
-            $separator_pos = strpos($path, '/');
+            $separator_pos = strpos($path, '_');
             if($separator_pos){
-                return strtolower(substr($path, $separator_pos)).'.class.php';
+                return strtolower(substr($path, $separator_pos+1)).'.class.php';
             }
             return strtolower($path).'.class.php';
         }
         private function getClassName($path){
-            $separator_pos = strpos($path, '/');
+            $separator_pos = strpos($path, '_');
             if($separator_pos){
                 return ucfirst(strtolower(substr($path, $separator_pos+1)));
             }
