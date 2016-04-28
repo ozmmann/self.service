@@ -6,6 +6,7 @@
      */
     class Config{
         const CORE_DIR = 'core/';
+        const LAYOUT_DIR = 'layout/';
         const MAIN_ROLE = 'guest';
         const ADMIN_ROLE = 'admin';
 

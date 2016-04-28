@@ -23,39 +23,55 @@
 //    }
     $db = Db::getLink();
     $sql = new Sql();
+    var_dump($db->sendQuery($sql->select(['id', 'title'])->from(['catalog'])->where(['id', '=' , '1']))->fetch_object());
+
+
+$login_data = ['method' => 'post', 'action' => '#', 'button_text' => 'ok',
+    'fields' => [
+        ['field' => 'input', 'type' => 'text', 'name' => 'login', 'label' => 'Login', 'text'=>'person', 'required' => '1'],
+        ['field' => 'input', 'type' => 'text', 'name' => 'password', 'label' => 'Password', 'text'=>'vpn_key', 'required' => '1'],
+        ['field' => 'input', 'type' => 'checkbox', 'name' => 'remember', 'label' => 'Remember me'],
+    ]
+];
+$form = new Form($login_data);
+$form->showForm();
+
 //    var_dump($db->sendQuery($sql->select(['id'])->from(['user']))->fetch_object());
 
-    $auth = $app->getAuth();
+/*
+$auth = $app->getAuth();
 
-    if($_POST['action'] == 'login')
-    {
-        $login = $auth->login($_POST['email'], $_POST['password'], 1);
+if($_POST['action'] == 'login')
+{
+    $login = $auth->login($_POST['email'], $_POST['password'], 1);
 
-        if($login['error']) {
-            // Something went wrong, display error message
-            echo '<div class="error">' . $login['message'] . '</div>';
-        } else {
-            // Logged in successfully, set cookie, display success message
-            setcookie('authID', $login['hash'], $login['expire'], '/', null, 0, 0);
-            echo '<div class="success">' . $login['message'] . '</div>';
-            var_dump(array($login['hash'], $login['expire']));
-        }
+    if($login['error']) {
+        // Something went wrong, display error message
+        echo '<div class="error">' . $login['message'] . '</div>';
+    } else {
+        // Logged in successfully, set cookie, display success message
+        setcookie('authID', $login['hash'], $login['expire'], '/', null, 0, 0);
+        echo '<div class="success">' . $login['message'] . '</div>';
+        var_dump(array($login['hash'], $login['expire']));
     }
-    elseif($_POST['action'] == 'register')
-    {
-        $register = $auth->register($_POST['email'], $_POST['password'], $_POST['repeatpassword'], array(), null, true);
+}
+elseif($_POST['action'] == 'register')
+{
+    $register = $auth->register($_POST['email'], $_POST['password'], $_POST['repeatpassword'], array(), null, true);
 
-        if($register['error']) {
-            // Something went wrong, display error message
-            echo '<div class="error">' . $register['message'] . '</div>';
-        } else {
-            // Logged in successfully, set cookie, display success message
-            setcookie('authID', $register['hash'], $register['expire'], '/', null, 0, 0);
-            echo '<div class="success">' . $register['message'] . '</div>';
-        }
+    if($register['error']) {
+        // Something went wrong, display error message
+        echo '<div class="error">' . $register['message'] . '</div>';
+    } else {
+        // Logged in successfully, set cookie, display success message
+        setcookie('authID', $register['hash'], $register['expire'], '/', null, 0, 0);
+        echo '<div class="success">' . $register['message'] . '</div>';
     }
+}
 
 var_dump($_COOKIE);
+
+*/
 
 
 ?>
