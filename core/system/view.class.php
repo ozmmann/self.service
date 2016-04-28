@@ -2,6 +2,8 @@
     class View{
         protected $_layout;
         protected $_layout_directory;
+        protected $_form;
+        protected $_page_data;
 
         /**
          * View constructor.
@@ -27,6 +29,23 @@
             $this->_layout_directory = $layout_directory.'/';
         }
 
+        /**
+         * @param Form $form
+         */
+        public function setForm(Form $form){
+            $this->_form = $form;
+        }
+
+        /**
+         * @return Form
+         */
+        public function getForm(){
+            return $this->_form;
+        }
+
+        public function getTitle(){
+            return "test title";
+        }
         /**
          * @param bool|string $tpl
          */
