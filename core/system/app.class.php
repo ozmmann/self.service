@@ -12,6 +12,7 @@
         private $_url;
         private $_auth;
         private $_db;
+        private $_request;
 
         /**
          * App constructor.
@@ -23,12 +24,14 @@
              * includes files
              */
             $this->_loader->load('lib/url');
-            $this->_loader->load('auth');
+            $this->_loader->load('lib/auth');
+            $this->_loader->load('lib/request');
             $this->_loader->load('controller');
             $this->_loader->load('db');
-            $this->_loader->load('sql');
+            $this->_loader->load('lib/sql');
 
             $this->_url = new Url();
+            $this->_request = new Request();
             $this->_auth = new Auth();
             $this->_db = Db::getLink();
 
@@ -78,11 +81,22 @@
         public function getDb(){
             return $this->_db;
         }
-        /**
-         * @return string
-         */
-        public function requestMethod(){
-            return $_SERVER['REQUEST_METHOD'];
 
+        /**
+         * @return Request
+         */
+        public function getRequest(){
+            return $this->_request;
+        }
+        
+        public function runHandler($handler_name, $action_name){
+            $this->_loader->load('lib/handler');
+            $this->_loader->load('handler/'.$handler_name);
+            $handler = new $handler_name();
+            if(!method_exists($handler, $action_name)){
+                //todo need exception!
+                echo "method not found";
+            }
+            $handler->$action_name();
         }
     }
