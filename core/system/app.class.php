@@ -19,6 +19,9 @@
         private function __construct(){
             global $loader;
             $this->_loader = $loader;
+            /**
+             * includes files
+             */
             $this->_loader->load('lib/url');
             $this->_loader->load('auth');
             $this->_loader->load('controller');

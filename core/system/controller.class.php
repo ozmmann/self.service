@@ -6,10 +6,15 @@
      */
     abstract class Controller{
         protected $_app;
+        protected $_model;
+        protected $_view;
         protected $_action_urlSegmentNum;
 
         public function __construct(){
             $this->_app = App::getApp();
+            $this->_app->getLoader()->load('model');
+            $this->_app->getLoader()->load('view');
+            
         }
 
         public function run(){
