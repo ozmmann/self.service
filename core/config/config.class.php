@@ -11,10 +11,23 @@
 
         const DB = [
             'host' => 'localhost',
-            'name' => 'newaddress_db',
+            'name' => 'mydb',
             'user' => 'root',
-            'password' => '',
-            'prefix' => 'nas_'
+            'password' => '1324657980',
+            'prefix' => ''
+        ];
+
+        const AUTH = [
+            'site_key' => 'fghuior.)/!/jdUkd8s2!7HVHG7777ghg',
+            'site_url' => 'http://' . Config::BASE_URL,
+            'smtp' => '0',
+            'smtp_auth' => '1',
+            'smtp_host' => 'smtp.gmail.com',
+            'smtp_password' => 'oR4m4z4n0v',
+            'smtp_port' => '587',
+            'smtp_security' => NULL,
+            'smtp_username' => 'osman.ramazanov@gmail.com',
+            'table_users' => 'user',
         ];
 
         const BASE_URL = 'newaddress.local';

@@ -23,4 +23,5 @@
 //    }
     $db = Db::getLink();
     $sql = new Sql();
-    var_dump($db->sendQuery($sql->select(['id', 'title'])->from(['catalog'])->where(['id', '=' , '1']))->fetch_object());
+    var_dump($db);
+    var_dump($db->sendQuery($sql->select(['id', 'name'])->from(['user']))->fetch_object());
