@@ -24,3 +24,14 @@
     $db = Db::getLink();
     $sql = new Sql();
     var_dump($db->sendQuery($sql->select(['id', 'title'])->from(['catalog'])->where(['id', '=' , '1']))->fetch_object());
+
+
+$login_data = ['method' => 'post', 'action' => '#', 'button_text' => 'ok',
+    'fields' => [
+        ['field' => 'input', 'type' => 'text', 'name' => 'login', 'label' => 'Login', 'text'=>'person', 'required' => '1'],
+        ['field' => 'input', 'type' => 'text', 'name' => 'password', 'label' => 'Password', 'text'=>'vpn_key', 'required' => '1'],
+        ['field' => 'input', 'type' => 'checkbox', 'name' => 'remember', 'label' => 'Remember me'],
+    ]
+];
+$form = new Form($login_data);
+$form->showForm();
