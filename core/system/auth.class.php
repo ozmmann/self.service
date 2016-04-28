@@ -91,7 +91,7 @@ class Auth
         $return['error'] = false;
         $return['message'] = $this->lang["logged_in"];
 
-        $return['hash'] = sha1($this->config->site_key . microtime());;
+        $return['hash'] = sha1($this->config['site_key'] . microtime());;
         $expire = date("Y-m-d H:i:s", strtotime("+1 month"));
         $return['expire'] = strtotime($expire);
 
@@ -199,7 +199,7 @@ class Auth
             return $return;
         }
 
-        $query = $this->dbh->prepare("UPDATE {$this->config->table_users} SET status = ? WHERE id = ?");
+        $query = $this->dbh->prepare("UPDATE {$this->config['table_users']} SET status = ? WHERE id = ?");
         $query->execute(array("active", $getRequest['uid']));
 
         $this->deleteRequest($getRequest['id']);
@@ -232,7 +232,7 @@ class Auth
             return $return;
         }
 
-        $query = $this->dbh->prepare("SELECT id FROM {$this->config->table_users} WHERE email = ?");
+        $query = $this->dbh->prepare("SELECT id FROM {$this->config['table_users']} WHERE email = ?");
         $query->execute(array($email));
 
         if ($query->rowCount() == 0) {
@@ -288,7 +288,7 @@ class Auth
 
     public function getUID($email)
     {
-        $query = $this->dbh->prepare("SELECT id FROM {$this->config->table_users} WHERE email = ?");
+        $query = $this->dbh->prepare("SELECT id FROM {$this->config['table_users']} WHERE email = ?");
         $query->execute(array($email));
 
         if($query->rowCount() == 0) {
@@ -314,7 +314,7 @@ class Auth
             return false;
         }
 
-        $data['hash'] = sha1($this->config->site_key . microtime());
+        $data['hash'] = sha1($this->config['site_key'] . microtime());
         $agent = $_SERVER['HTTP_USER_AGENT'];
 
         $this->deleteExistingSessions($uid);
@@ -327,9 +327,9 @@ class Auth
             $data['expiretime'] = 0;
         }
 
-        $data['cookie_crc'] = sha1($data['hash'] . $this->config->site_key);
+        $data['cookie_crc'] = sha1($data['hash'] . $this->config['site_key']);
 
-        $query = $this->dbh->prepare("INSERT INTO {$this->config->table_sessions} (uid, hash, expiredate, ip, agent, cookie_crc) VALUES (?, ?, ?, ?, ?, ?)");
+        $query = $this->dbh->prepare("INSERT INTO {$this->config['table_sessions']} (uid, hash, expiredate, ip, agent, cookie_crc) VALUES (?, ?, ?, ?, ?, ?)");
 
         if(!$query->execute(array($uid, $data['hash'], $data['expire'], $ip, $agent, $data['cookie_crc']))) {
             return false;
@@ -347,10 +347,16 @@ class Auth
 
     private function deleteExistingSessions($uid)
     {
-        $query = $this->dbh->prepare("DELETE FROM {$this->config->table_sessions} WHERE uid = ?");
-        $query->execute(array($uid));
+//        $query = $this->dbh->prepare("DELETE FROM {$this->config['table_sessions']} WHERE uid = ?");
+//        $query->execute(array($uid));
 
-        return $query->rowCount() == 1;
+//        return $query->rowCount() == 1;
+        if (isset($_COOKIE['authID'])){
+            unset($_COOKIE['authID']);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /***
@@ -361,10 +367,17 @@ class Auth
 
     private function deleteSession($hash)
     {
-        $query = $this->dbh->prepare("DELETE FROM {$this->config->table_sessions} WHERE hash = ?");
-        $query->execute(array($hash));
+//        $query = $this->dbh->prepare("DELETE FROM {$this->config['table_sessions']} WHERE hash = ?");
+//        $query->execute(array($hash));
+//
+//        return $query->rowCount() == 1;
 
-        return $query->rowCount() == 1;
+        if (isset($_COOKIE['authID']) && $_COOKIE['authID'] == $hash){
+            unset($_COOKIE['authID']);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -375,7 +388,7 @@ class Auth
 
     public function getSessionUID($hash)
     {
-        $query = $this->dbh->prepare("SELECT uid FROM {$this->config->table_sessions} WHERE hash = ?");
+        $query = $this->dbh->prepare("SELECT uid FROM {$this->config['table_sessions']} WHERE hash = ?");
         $query->execute(array($hash));
 
         if ($query->rowCount() == 0) {
@@ -393,7 +406,7 @@ class Auth
 
     public function isEmailTaken($email)
     {
-        $query = $this->dbh->prepare("SELECT count(*) FROM {$this->config->table_users} WHERE email = ?");
+        $query = $this->dbh->prepare("SELECT count(*) FROM {$this->config['table_users']} WHERE email = ?");
         $query->execute(array($email));
 
         if ($query->fetchColumn() == 0) {
@@ -415,7 +428,7 @@ class Auth
     {
         $return['error'] = true;
 
-        $query = $this->dbh->prepare("INSERT INTO {$this->config->table_users} VALUES ()");
+        $query = $this->dbh->prepare("INSERT INTO {$this->config['table_users']} VALUES ()");
 
         if(!$query->execute()) {
             $return['message'] = $this->lang["system_error"] . " #03";
@@ -429,7 +442,7 @@ class Auth
             $addRequest = $this->addRequest($uid, $email, "activation", $sendmail);
 
             if($addRequest['error'] == 1) {
-                $query = $this->dbh->prepare("DELETE FROM {$this->config->table_users} WHERE id = ?");
+                $query = $this->dbh->prepare("DELETE FROM {$this->config['table_users']} WHERE id = ?");
                 $query->execute(array($uid));
 
                 $return['message'] = $addRequest['message'];
@@ -455,12 +468,12 @@ class Auth
                 }, $customParamsQueryArray));
         } else { $setParams = ''; }
 
-        $query = $this->dbh->prepare("UPDATE {$this->config->table_users} SET email = ?, password = ?, status = ? {$setParams} WHERE id = ?");
+        $query = $this->dbh->prepare("UPDATE {$this->config['table_users']} SET email = ?, password = ?, status = ? {$setParams} WHERE id = ?");
 
         $bindParams = array_values(array_merge(array($email, $password, $isactive), $params, array($uid)));
 
         if(!$query->execute($bindParams)) {
-            $query = $this->dbh->prepare("DELETE FROM {$this->config->table_users} WHERE id = ?");
+            $query = $this->dbh->prepare("DELETE FROM {$this->config['table_users']} WHERE id = ?");
             $query->execute(array($uid));
 
             $return['message'] = $this->lang["system_error"] . " #04";
@@ -479,7 +492,7 @@ class Auth
 
     private function getBaseUser($uid)
     {
-        $query = $this->dbh->prepare("SELECT email, password, status FROM {$this->config->table_users} WHERE id = ?");
+        $query = $this->dbh->prepare("SELECT email, password, status FROM {$this->config['table_users']} WHERE id = ?");
         $query->execute(array($uid));
 
         if ($query->rowCount() == 0) {
@@ -504,7 +517,7 @@ class Auth
 
     public function getUser($uid)
     {
-        $query = $this->dbh->prepare("SELECT * FROM {$this->config->table_users} WHERE id = ?");
+        $query = $this->dbh->prepare("SELECT * FROM {$this->config['table_users']} WHERE id = ?");
         $query->execute(array($uid));
 
         if ($query->rowCount() == 0) {
@@ -562,14 +575,14 @@ class Auth
             return $return;
         }
 
-        $query = $this->dbh->prepare("DELETE FROM {$this->config->table_users} WHERE id = ?");
+        $query = $this->dbh->prepare("DELETE FROM {$this->config['table_users']} WHERE id = ?");
 
         if(!$query->execute(array($uid))) {
             $return['message'] = $this->lang["system_error"] . " #05";
             return $return;
         }
 
-        $query = $this->dbh->prepare("DELETE FROM {$this->config->table_sessions} WHERE uid = ?");
+        $query = $this->dbh->prepare("DELETE FROM {$this->config['table_sessions']} WHERE uid = ?");
 
         if(!$query->execute(array($uid))) {
             $return['message'] = $this->lang["system_error"] . " #06";
@@ -623,7 +636,7 @@ class Auth
             }
         }
 
-        $query = $this->dbh->prepare("SELECT id, expire FROM {$this->config->table_requests} WHERE uid = ? AND type = ?");
+        $query = $this->dbh->prepare("SELECT id, expire FROM {$this->config['table_requests']} WHERE uid = ? AND type = ?");
         $query->execute(array($uid, $type));
 
         if($query->rowCount() > 0) {
@@ -648,7 +661,7 @@ class Auth
         $key = $this->getRandomKey(20);
         $expire = date("Y-m-d H:i:s", strtotime('+10 minutes'));
 
-        $query = $this->dbh->prepare("INSERT INTO {$this->config->table_requests} (uid, rkey, expire, type) VALUES (?, ?, ?, ?)");
+        $query = $this->dbh->prepare("INSERT INTO {$this->config['table_requests']} (uid, rkey, expire, type) VALUES (?, ?, ?, ?)");
 
         if(!$query->execute(array($uid, $key, $expire, $type))) {
             $return['message'] = $this->lang["system_error"] . " #09";
@@ -661,37 +674,37 @@ class Auth
         {
             // Check configuration for SMTP parameters
             $mail = new \PHPMailer;
-            if($this->config->smtp) {
+            if($this->config['smtp']) {
                 $mail->isSMTP();
-                $mail->Host = $this->config->smtp_host;
-                $mail->SMTPAuth = $this->config->smtp_auth;
-                if(!is_null($this->config->smtp_auth)) {
-                    $mail->Username = $this->config->smtp_username;
-                    $mail->Password = $this->config->smtp_password;
+                $mail->Host = $this->config['smtp_host'];
+                $mail->SMTPAuth = $this->config['smtp_auth'];
+                if(!is_null($this->config['smtp_auth'])) {
+                    $mail->Username = $this->config['smtp_username'];
+                    $mail->Password = $this->config['smtp_password'];
                 }
-                $mail->Port = $this->config->smtp_port;
+                $mail->Port = $this->config['smtp_port'];
 
-                if(!is_null($this->config->smtp_security)) {
-                    $mail->SMTPSecure = $this->config->smtp_security;
+                if(!is_null($this->config['smtp_security'])) {
+                    $mail->SMTPSecure = $this->config['smtp_security'];
                 }
             }
 
             $site_name = 'work.pokupon.ua';
             $mail->From = 'no-reply@work.pokupon.ua';
-            $mail->FromName = $this->config->site_name;
+            $mail->FromName = $site_name;
             $mail->addAddress($email);
             $mail->isHTML(true);
 
             if($type == "activation") {
 
                 $mail->Subject = sprintf($this->lang['email_activation_subject'], $site_name);
-                $mail->Body = sprintf($this->lang['email_activation_body'], $this->config->site_url, 'activate', $key);
-                $mail->AltBody = sprintf($this->lang['email_activation_altbody'], $this->config->site_url, 'activate', $key);
+                $mail->Body = sprintf($this->lang['email_activation_body'], $this->config['site_url'], 'activate', $key);
+                $mail->AltBody = sprintf($this->lang['email_activation_altbody'], $this->config['site_url'], 'activate', $key);
             }
             else {
                 $mail->Subject = sprintf($this->lang['email_reset_subject'], $site_name);
-                $mail->Body = sprintf($this->lang['email_reset_body'], $this->config->site_url, 'reset', $key);
-                $mail->AltBody = sprintf($this->lang['email_reset_altbody'], $this->config->site_url, 'reset', $key);
+                $mail->Body = sprintf($this->lang['email_reset_body'], $this->config['site_url'], 'reset', $key);
+                $mail->AltBody = sprintf($this->lang['email_reset_altbody'], $this->config['site_url'], 'reset', $key);
             }
 
             if(!$mail->send()) {
@@ -718,7 +731,7 @@ class Auth
     {
         $return['error'] = true;
 
-        $query = $this->dbh->prepare("SELECT id, uid, expire FROM {$this->config->table_requests} WHERE rkey = ? AND type = ?");
+        $query = $this->dbh->prepare("SELECT id, uid, expire FROM {$this->config['table_requests']} WHERE rkey = ? AND type = ?");
         $query->execute(array($key, $type));
 
         if ($query->rowCount() === 0) {
@@ -753,7 +766,7 @@ class Auth
 
     private function deleteRequest($id)
     {
-        $query = $this->dbh->prepare("DELETE FROM {$this->config->table_requests} WHERE id = ?");
+        $query = $this->dbh->prepare("DELETE FROM {$this->config['table_requests']} WHERE id = ?");
         return $query->execute(array($id));
     }
 
@@ -869,7 +882,7 @@ class Auth
 
         $password = $this->getHash($password);
 
-        $query = $this->dbh->prepare("UPDATE {$this->config->table_users} SET password = ? WHERE id = ?");
+        $query = $this->dbh->prepare("UPDATE {$this->config['table_users']} SET password = ? WHERE id = ?");
         $query->execute(array($password, $data['uid']));
 
         if ($query->rowCount() == 0) {
@@ -912,7 +925,7 @@ class Auth
             return $return;
         }
 
-        $query = $this->dbh->prepare("SELECT id FROM {$this->config->table_users} WHERE email = ?");
+        $query = $this->dbh->prepare("SELECT id FROM {$this->config['table_users']} WHERE email = ?");
         $query->execute(array($email));
 
         if($query->rowCount() == 0) {
@@ -997,7 +1010,7 @@ class Auth
 
         $newpass = $this->getHash($newpass);
 
-        $query = $this->dbh->prepare("UPDATE {$this->config->table_users} SET password = ? WHERE id = ?");
+        $query = $this->dbh->prepare("UPDATE {$this->config['table_users']} SET password = ? WHERE id = ?");
         $query->execute(array($newpass, $uid));
 
         $return['error'] = false;
@@ -1064,7 +1077,7 @@ class Auth
             return $return;
         }
 
-        $query = $this->dbh->prepare("UPDATE {$this->config->table_users} SET email = ? WHERE id = ?");
+        $query = $this->dbh->prepare("UPDATE {$this->config['table_users']} SET email = ? WHERE id = ?");
         $query->execute(array($email, $uid));
 
         if ($query->rowCount() == 0) {
@@ -1168,7 +1181,7 @@ class Auth
      */
     public function comparePasswords($userid, $password_for_check)
     {
-        $query = $this->dbh->prepare("SELECT password FROM {$this->config->table_users} WHERE id = ?");
+        $query = $this->dbh->prepare("SELECT password FROM {$this->config['table_users']} WHERE id = ?");
         $query->execute(array($userid));
 
         if ($query->rowCount() == 0) {

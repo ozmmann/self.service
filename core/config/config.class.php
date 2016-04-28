@@ -28,6 +28,7 @@
             'smtp_security' => NULL,
             'smtp_username' => 'osman.ramazanov@gmail.com',
             'table_users' => 'user',
+            'table_requests' => 'requests'
         ];
 
         const BASE_URL = 'newaddress.local';
