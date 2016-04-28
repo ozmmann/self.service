@@ -51,9 +51,9 @@
          */
         public function from($table){
             if(is_array($table)){
-                foreach($table as $key => $value){
-                    $table[$key] = $this->_prefix.$value;
-                }
+                $table = array_map(function($v){
+                    return $this->_prefix.$v;
+                }, $table);
             }else{
                 $table = $this->_prefix.$table;
             }
@@ -64,27 +64,21 @@
         /**
          * @param array $params
          * @return $this
+         *
+         * example usage: where([ ['id', '=>', '32'], 'AND', ['name', 'LIKE', '%as'], 'OR", ['alias', '=', 'str'] ])
          */
         public function where($params){
-            $this->_sql .= "WHERE ".$params[0].$params[1].$this->getSelfData($params[2])." ";
-            return $this;
-        }
+            $this->_sql .= "WHERE ";
+            foreach($params as $param){
+                if(is_array($param)){
+                    $param[2] = $this->getSelfData($param[2]);
+                    $this->_sql .=  implode(' ', $param);
+                }else{
+                    $this->_sql .= ' '.$param.' ';
+                }
 
-        /**
-         * @param array $params
-         * @return $this
-         */
-        public function whereAnd($params){
-            $this->_sql .= "AND ".$params[0].$params[1].$this->getSelfData($params[2])." ";
-            return $this;
-        }
-
-        /**
-         * @param array $params
-         * @return $this
-         */
-        public function whereOr($params){
-            $this->_sql .= "OR ".$params[0].$params[1].$this->getSelfData($params[2])." ";
+            }
+            $this->_sql .= ' ';
             return $this;
         }
     }
