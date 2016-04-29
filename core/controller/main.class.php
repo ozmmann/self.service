@@ -23,4 +23,18 @@
             }
             $this->_view->render();
         }
+
+        protected function actionCatalog(){
+            $this->_app->getLoader()->load('lib/form');
+
+            $this->_view->setLayoutDirectory('admin');
+            $this->_view->setLayout('login');
+
+            $this->_view->setForm(new Form(Config::FORM['catalog'], 'admin'));
+            if($this->_app->getRequest()->getMethod() == 'POST'){
+                var_dump($_POST);
+            }
+
+            $this->_view->render();
+        }
     }

@@ -68,8 +68,41 @@
                     $input .= ' class="'.$this->getInpClass($field['name']).'"';
                     $input .= '>';
                     break;
-            }
+                case 'select':
+                    $input.='<select type="'.$field['type'].'" id="'.$field['id'].'" name="'.$field['name'].'"';
+                    if($field['required']){
+                        $input.=' required';
+                    }
+                    if ($field['multiple']) {
+                        $input .= ' multiple';
+                    }
+                    $input .= ' class="' . $this->getInpClass($field['name']) . '"';
+                    $input .= '>';
+                    foreach ($field['option'] as $key => $option) {
+                        if ($key == 'optgroup') {
+                            $input .= '<optgroup label="' . $option['label'] . '">';
+                            continue;
+                        }
+                        $input .= '<option';
+                        if ($option['value']) {
+                            $input .= ' value="' . $option['value'] . '"';
+                        }
+                        if ($option['disabled']) {
+                            $input .= ' disabled';
+                        }
+                        if ($option['selected']) {
+                            $input .= ' selected';
+                        }
+                        $input .= '>';
+                        $input .= $option['label'];
+                        $input .= '</option>';
+                    }
+                    $input .= '</select>';
+                    break;
+                case 'textarea':
 
+                    break;
+            }
             return $input;
         }
 

@@ -68,6 +68,60 @@
                 'default_class' => [
                     'inp' => 'validate'
                 ]
+            ],
+            'catalog'=>[
+                    'form_data'=>[
+                            'action'=>'/catalog',
+                            'method'=>'POST'
+                    ],
+                    'fields'=>[
+                            'where'=>[
+                                    'field'=>'input',
+                                    'type'=>'text',
+                                    'id'=>'where',
+                                    'name'=>'where',
+                                    'required'=>true,
+                                    'label'=>'Where form',
+                                    'class'=>'col s12'
+                            ],
+                            'city'=>[
+                                    'field'=>'select',
+                                    'type'=>'text',
+                                    'id'=>'selected',
+                                    'name'=>'selected',
+                                    'multiple'=>true,
+                                    'option'=>[
+                                            'kiev'   => [
+                                                    'value'    => 'kiev',
+                                                    'disabled' => true,
+                                                    'selected' => true,
+                                                    'label'    => 'Kiev',
+                                            ],
+                                            'harkiv' => [
+                                                    'value' => 'harkiv',
+                                                    'label' => 'Harkiv',
+                                            ],
+                                            'poltava' => [
+                                                    'value' => 'poltava',
+                                                    'label' => 'Poltava',
+                                                    'selected' => true,
+                                            ],
+                                            'lviv' => [
+                                                    'value' => 'lviv',
+                                                    'label' => 'Lviv',
+                                            ]
+                                    ],
+                                    'label'=>'Select city from',
+                                    'class' => 'col s12'
+                            ]
+                    ],
+                    'button'=>[
+                            'text'=>'Search',
+                            'class'=>'col s12'
+                    ],
+                    'defaul_class'=>[
+                            'inp'=>'validate'
+                    ]
             ]
         ];
     }
