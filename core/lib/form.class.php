@@ -15,7 +15,8 @@
 
         /**
          * Form constructor.
-         * @param array $form_data
+         *
+         * @param array  $form_data
          * @param string $layout_directory
          */
         public function __construct($form_data, $layout_directory){
@@ -24,7 +25,7 @@
             $this->_button = $form_data['button'];
             $this->_default_inp_class = $form_data['default_class']['inp'];
 
-            $this->_template = $layout_directory.'/form.tpl';
+            $this->_template = $layout_directory . '/form.tpl';
         }
 
         /**
@@ -34,7 +35,7 @@
         public function getFormData(){
             $str = '';
             foreach($this->_form_data as $param_name => $value){
-                $str .= $param_name.' = "'.$value.'" ';
+                $str .= $param_name . ' = "' . $value . '" ';
             }
 
             return $str;
@@ -49,65 +50,110 @@
 
         /**
          * @param array $field
+         *
          * @return string
          */
         public function getInput($field){
             $input = '';
             switch($field['field']){
                 case 'input':
-                    $input .= '<input type="'.$field['type'].'" id="'.$field['id'].'" name="'.$field['name'].'"';
+                    if($field['type']=='file'){
+                        /*<div class="btn">
+                            <span>File</span>
+                            <input type="file">
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                          </div>*/
+
+                    }
+                    $input .= '<input type="' . $field['type'] . '" id="' . $field['id'] . '" name="' . $field['name'] . '"';
                     if($field['required']){
                         $input .= ' required';
                     }
                     if($field['placeholder']){
-                        $input .= ' placeholder="'.$field['placeholder'].'"';
+                        $input .= ' placeholder="' . $field['placeholder'] . '"';
                     }
                     if($field['pattern']){
-                        $input .= ' pattern="'.$field['pattern'].'"';
+                        $input .= ' pattern="' . $field['pattern'] . '"';
                     }
-                    $input .= ' class="'.$this->getInpClass($field['name']).'"';
+                    $input .= ' class="' . $this->getInpClass($field['name']) . '"';
                     $input .= '>';
                     break;
                 case 'select':
-                    $input.='<select type="'.$field['type'].'" id="'.$field['id'].'" name="'.$field['name'].'"';
-                    if($field['required']){
-                        $input.=' required';
+                    $optionStr='';
+                    $multi = false;
+
+                    //region option
+                    foreach($field['option'] as $option){
+                        if($option['optg']){
+                            $optionStr .= '<optgroup label="' . $option['label'] . '">';
+                            $multi=true;
+                            continue;
+                        }
+                        $optionStr .= '<option';
+                        if($option['value']){
+                            $optionStr .= ' value="' . $option['value'] . '"';
+                        }
+                        if($option['disabled']){
+                            $optionStr .= ' disabled';
+                        }
+                        if($option['selected']){
+                            $optionStr .= ' selected';
+                        }
+                        $optionStr .= '>';
+                        $optionStr .= $option['label'];
+                        $optionStr .= '</option>';
                     }
-                    if ($field['multiple']) {
+                    //endregion
+
+                    $input .= '<select id="' . $field['id'] . '" name="' . $field['name'] . '"';
+                    if($field['required']){
+                        $input .= ' required';
+                    }
+                    if($multi){
                         $input .= ' multiple';
                     }
                     $input .= ' class="' . $this->getInpClass($field['name']) . '"';
                     $input .= '>';
-                    foreach ($field['option'] as $key => $option) {
-                        if ($key == 'optgroup') {
-                            $input .= '<optgroup label="' . $option['label'] . '">';
-                            continue;
-                        }
-                        $input .= '<option';
-                        if ($option['value']) {
-                            $input .= ' value="' . $option['value'] . '"';
-                        }
-                        if ($option['disabled']) {
-                            $input .= ' disabled';
-                        }
-                        if ($option['selected']) {
-                            $input .= ' selected';
-                        }
-                        $input .= '>';
-                        $input .= $option['label'];
-                        $input .= '</option>';
-                    }
+                    $input .= $optionStr;
                     $input .= '</select>';
                     break;
                 case 'textarea':
-
+                    $input .= '<textarea ';
+                    if(!$field['readonly']){
+                        if($field['required']){
+                            $input .= ' required';
+                        }
+                        if($field['maxlength']){
+                            $input .= ' maxlength="' . $field['maxlength'] . '"';
+                        }
+                        if($field['length']){
+                            $input .= ' length="' . $field['length'] . '"';
+                        }
+                    } else{
+                        $input .= ' readonly';
+                    }
+                    if($field['placeholder']){
+                        $input .= ' placeholder="' . $field['placeholder'] . '"';
+                    }
+                    if($field['cols']){
+                        $input .= ' cols="' . $field['cols'] . '"';
+                    }
+                    if($field['rows']){
+                        $input .= ' rows="' . $field['rows'] . '"';
+                    }
+                    $input .= ' class="' . $this->getInpClass($field['name']) . '"';
+                    $input .= '></textarea>';
                     break;
             }
+
             return $input;
         }
 
         /**
          * @param string $key
+         *
          * @return string
          */
         public function getButton($key){
@@ -116,22 +162,25 @@
 
         /**
          * get intput status
+         *
          * @param string $inp_name
+         *
          * @return string
          */
         public function getInpClass($inp_name){
             $class_name = '';
             if($this->_fields[$inp_name]['type'] != 'checkbox' or $this->_fields[$inp_name]['type'] != 'radio' and $this->_fields[$inp_name]['required']){
-                $class_name = $this->_default_inp_class.' ';
+                $class_name = $this->_default_inp_class . ' ';
             }
+
             if(!empty($this->_form_errors)){
                 if(isset($this->_form_errors['fields'][$inp_name])){
                     $class_name .= 'invalid';
-                }
-                else{
+                } else{
                     $class_name .= 'valid';
                 }
             }
+
             return $class_name;
         }
 
@@ -139,7 +188,7 @@
          * path to tpl which to build
          */
         public function showForm(){
-            include Config::LAYOUT_DIR.$this->_template;
+            include Config::LAYOUT_DIR . $this->_template;
         }
 
         /**
@@ -156,6 +205,37 @@
             }
 
             return $required_fields;
+        }
+
+        public function getInitMaterial(){
+            $initStr = '$(document).ready(function() {';
+
+            foreach($this->_fields as $field){
+                if($field['field'] == 'select'){
+                    $initStr .= '
+                    $("select").material_select();
+                    ';
+                }
+                if($field['type'] == 'date'){
+                    $initStr .= '
+                    $(".datepicker").pickadate({selectMonths: true, selectYears:' . $field['year'] . '})
+                    ';
+                }
+                if($field['field'] == 'textarea'){
+                    $initStr .= '
+                    $("textarea#' . $field['id'] . '").characterCounter();
+                    ';
+                    /**
+                     * get autoresize textarea
+                     */
+                    //$initStr .= '$("#' . $field['id'] . '").val("New Text");
+                    //$("#' . $field['id'] . '").trigger(\'autoresize\')';
+                }
+            }
+
+            $initStr .= '});';
+
+            return $initStr;
         }
     }
 
