@@ -1,8 +1,11 @@
 <?php
+    namespace lib;
+    use config;
     /**
      * Class Db
+     * @package lib
+     * 
      * database object
-     *
      * singleton
      */
     class Db{
@@ -13,7 +16,7 @@
          * Db constructor.
          */
         private function __construct(){
-            $this->_db = new mysqli(Config::DB['host'], Config::DB['user'], Config::DB['password'], Config::DB['name']);
+            $this->_db = new \mysqli(config\Config::DB['host'], config\Config::DB['user'], config\Config::DB['password'], config\Config::DB['name']);
         }
 
         /**
@@ -26,7 +29,11 @@
             return self::$_link;
         }
 
-        public function sendQuery(Sql $sql){
+        /**
+         * @param \lib\Sql $sql
+         * @return bool|\mysqli_result
+         */
+        public function sendQuery(\lib\Sql $sql){
             return $this->_db->query($sql->getSql());
         }
 

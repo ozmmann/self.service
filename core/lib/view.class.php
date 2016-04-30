@@ -1,4 +1,10 @@
 <?php
+    namespace lib;
+    use config;
+    /**
+     * Class View
+     * @package lib
+     */
     class View{
         protected $_layout;
         protected $_layout_directory;
@@ -53,6 +59,6 @@
             if($tpl){
                 $tpl = $tpl.'.tpl';
             }
-            include Config::LAYOUT_DIR.$this->_layout_directory.$this->_layout;
+            include config\Config::LAYOUT_DIR.$this->_layout_directory.$this->_layout;
         }
     }
