@@ -1,8 +1,8 @@
 <?php
-
+    namespace lib;
     /**
      * Class Translit
-     *
+     * @package lib
      * replace cyrillic symbols to latin
      */
     class Translit{

@@ -1,6 +1,8 @@
 <?php
+    namespace lib;
     /**
      * Class Url
+     * @package lib
      *
      * if you need to do something with URL, use this
      */

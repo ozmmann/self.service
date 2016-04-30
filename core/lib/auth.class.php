@@ -1,10 +1,14 @@
 <?php
 
+namespace lib;
+use config;
+
 require __DIR__ . "/../PHPMailer/PHPMailerAutoload.php";
 
-/***
- * Auth class
- * Required PHP 5.4 and above.
+
+/**
+ * Class Auth
+ * @package lib
  */
 
 class Auth
@@ -12,6 +16,7 @@ class Auth
     private $dbh;
     public $config;
     public $lang;
+    private $_role;
 
     /***
      * Initiates database connection
@@ -25,8 +30,21 @@ class Auth
 		require "languages/ru_RU.php";
 		$this->lang = $lang;
 
+        $this->_role = (!isset($_SESSION['role'])) ? config\Config::MAIN_ROLE : $_SESSION['role'];
+
 		date_default_timezone_set('Europe/Kiev');
 	}
+
+
+    /**
+     * @return bool
+     */
+    public function is_admin()
+    {
+        if ($this->_role == config\Config::ADMIN_ROLE) {
+            return true;
+        }
+    }
 
     /***
      * Logs a user in

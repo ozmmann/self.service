@@ -1,7 +1,15 @@
 <?php
+    namespace lib;
+    use config;
+    /**
+     * Class View
+     * @package lib
+     */
     class View{
         protected $_layout;
         protected $_layout_directory;
+        protected $_form;
+        protected $_page_data;
 
         /**
          * View constructor.
@@ -28,12 +36,29 @@
         }
 
         /**
+         * @param Form $form
+         */
+        public function setForm(Form $form){
+            $this->_form = $form;
+        }
+
+        /**
+         * @return Form
+         */
+        public function getForm(){
+            return $this->_form;
+        }
+
+        public function getTitle(){
+            return "test title";
+        }
+        /**
          * @param bool|string $tpl
          */
         public function render($tpl=false){
             if($tpl){
                 $tpl = $tpl.'.tpl';
             }
-            include Config::LAYOUT_DIR.$this->_layout_directory.$this->_layout;
+            include config\Config::LAYOUT_DIR.$this->_layout_directory.$this->_layout;
         }
     }

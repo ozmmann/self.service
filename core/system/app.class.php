@@ -1,5 +1,6 @@
 <?php
-
+    namespace system;
+    use lib, handler;
     /**
      * Class App
      *
@@ -8,30 +9,19 @@
      */
     class App{
         private static $app = null;
-        private $_loader;
         private $_url;
         private $_auth;
         private $_db;
+        private $_request;
 
         /**
          * App constructor.
          */
         private function __construct(){
-            global $loader;
-            $this->_loader = $loader;
-            /**
-             * includes files
-             */
-            $this->_loader->load('lib/url');
-            $this->_loader->load('auth');
-            $this->_loader->load('controller');
-            $this->_loader->load('db');
-            $this->_loader->load('sql');
-
-            $this->_url = new Url();
-            $this->_auth = new Auth();
-            $this->_db = Db::getLink();
-
+            $this->_url = new lib\Url();
+            $this->_request = new lib\Request();
+            $this->_auth = new lib\Auth();
+            $this->_db = lib\Db::getLink();
         }
 
         /**
@@ -45,44 +35,44 @@
         }
 
         /**
-         * @return Loader
-         */
-        public function getLoader(){
-            return $this->_loader;
-        }
-
-        /**
-         * @return Config
-         */
-        public function getConfig(){
-            return $this->_config;
-        }
-
-        /**
-         * @return Url
+         * @return lib\Url
          */
         public function getUrl(){
             return $this->_url;
         }
 
         /**
-         * @return Auth
+         * @return lib\Auth
          */
         public function getAuth(){
             return $this->_auth;
         }
 
         /**
-         * @return Db
+         * @return lib\Db
          */
         public function getDb(){
             return $this->_db;
         }
-        /**
-         * @return string
-         */
-        public function requestMethod(){
-            return $_SERVER['REQUEST_METHOD'];
 
+        /**
+         * @return lib\Request
+         */
+        public function getRequest(){
+            return $this->_request;
+        }
+
+        /**
+         * @param string $handler_name
+         * @param string $action_name
+         */
+        public function runHandler($handler_name, $action_name){
+            $handler_name = 'handler\\'.ucfirst($handler_name);
+            $handler = new $handler_name();
+            if(!method_exists($handler, $action_name)){
+                //todo need exception!
+                echo "method not found";
+            }
+            $handler->$action_name();
         }
     }

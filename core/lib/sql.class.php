@@ -1,6 +1,9 @@
 <?php
+    namespace lib;
+    use config;
     /**
      * Class Sql
+     * @package lib
      * 
      * creating sql query
      */
@@ -14,7 +17,7 @@
          */
         public function __construct(){
             $this->_db = Db::getLink();
-            $this->_prefix = Config::DB['prefix'];
+            $this->_prefix = config\Config::DB['prefix'];
         }
         private function getSelfData($data, $quote = "'"){
             $str = "";

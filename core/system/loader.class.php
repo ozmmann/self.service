@@ -1,56 +1,84 @@
 <?php
-
     /**
      * Class Loader
      *
-     * if you need load some class, use this class
+     * autoload classes
+     *
+     * @static array $map     this is classes map array
      */
     class Loader{
-        private $_core_dir;
-
+        private static $map = ClassesMap::MAP;
         /**
-         * Loader constructor.
+         * @param string $class
          */
-        public function __construct(){
-            $this->_core_dir = Config::CORE_DIR;
+        public static function autoload($class){
+            $class_name = self::getClassName($class);
+            $directory_name = self::getClassDirectory($class);
+            $path = self::getRealPath($class);
+
+            if(key_exists($directory_name, self::$map)){
+                if(key_exists($class_name, self::$map[$directory_name])){
+                    $path = self::$map[$directory_name][$class_name];
+                }
+            }
+
+            self::includeClass($path);
         }
-        
-        /**
-         * @param string $path
-         * @return object
-         */
-        public function load($path){
-            $file = $this->_core_dir.$this->getDir($path).$this->getFile($path);
 
-            if(file_exists($file)){
-                include_once $file;
-            }else{
-                //todo need exception!
-                echo 'file not found!';
+        /**
+         * require_once function
+         *
+         * @param string $path
+         */
+        private static function includeClass($path){
+            if(self::checkPath($path)){
+                require_once $path;
+            }
+            else{
+                //todo need exception
+                echo 'File: '.$path.' not found!';
             }
         }
+        /**
+         * Checking path to file
+         *
+         * @param string $path
+         * @return bool
+         */
+        private static function checkPath($path){
+            if(file_exists('core/'.$path)){
+                return true;
+            }
+            return false;
+        }
 
         /**
+         * return real path from namespace
+         *
          * @param string $path
          * @return string
          */
-        private function getDir($path){
-            $separator_pos = strpos($path, '/');
-            if($separator_pos){
-                return strtolower(substr($path, 0, $separator_pos)).'/';
-            }
-            return 'system/';
+        private static function getRealPath($path){
+            return strtolower(str_replace('\\', '/', $path)).'.class.php';
         }
 
         /**
+         * return only class name
+         *
          * @param string $path
          * @return string
          */
-        private function getFile($path){
-            $separator_pos = strpos($path, '/');
-            if($separator_pos){
-                return strtolower(substr($path, $separator_pos+1)).'.class.php';
-            }
-            return strtolower($path).'.class.php';
+        private static function getClassName($path){
+            return strtolower(substr($path, strrpos($path, '\\')+1));
+        }
+
+        /**
+         * return only base directory name
+         *
+         * @param string $path
+         * @return string
+         */
+        private static function getClassDirectory($path){
+            return strtolower(substr($path, 0, strpos($path, '\\')));
         }
     }

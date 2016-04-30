@@ -1,7 +1,9 @@
 <?php
+    namespace lib;
+    use system;
     /**
      * Class Controller
-     *
+     * @package lib
      * base controllers class
      */
     abstract class Controller{
@@ -11,10 +13,7 @@
         protected $_action_urlSegmentNum;
 
         public function __construct(){
-            $this->_app = App::getApp();
-            $this->_app->getLoader()->load('model');
-            $this->_app->getLoader()->load('view');
-            
+            $this->_app = system\App::getApp();
         }
 
         public function run(){
