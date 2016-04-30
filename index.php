@@ -1,20 +1,18 @@
 <?php
+    set_include_path('.' . PATH_SEPARATOR . './core/' . PATH_SEPARATOR);
     session_start();
-    $_SESSION['role'] = '';
-    require_once 'core/config/config.class.php';
-    require_once 'core/system/loader.class.php';
-    
-    $loader = new Loader();
-    $loader->load('app');
+    use config\Config;
 
-    $app = App::getApp();
+    require_once 'class_map.php';
+    require_once 'system/loader.class.php';
+    spl_autoload_register(array('Loader', 'autoload'));
 
-    $c_name = Config::BASE_CONTROLLER;
+    $app = system\App::getApp();
+
+    $c_name = '\controller\\'.Config::BASE_CONTROLLER;
     if($app->getUrl()->getFirstSegment() == Config::ADMIN_URL and $app->getAuth()->is_admin()){
-        $c_name = Config::ADMIN_CONTROLLER;
+        $c_name = '\controller\\'.Config::ADMIN_CONTROLLER;
     }
-    $app->getLoader()->load('controller/'.$c_name);
-
     /**
      * @var Object $controller
      */

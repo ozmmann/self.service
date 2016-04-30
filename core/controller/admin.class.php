@@ -1,4 +1,11 @@
 <?php
+    namespace controller;
+    use lib, config;
+
+    /**
+     * Class Admin
+     * @package controller
+     */
     class Admin extends Controller{
         public function __construct(){
             parent::__construct();

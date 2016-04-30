@@ -1,5 +1,6 @@
 <?php
-
+    namespace lib;
+    use config;
     /**
      * Class Form
      *
@@ -188,7 +189,7 @@
          * path to tpl which to build
          */
         public function showForm(){
-            include Config::LAYOUT_DIR . $this->_template;
+            include config\Config::LAYOUT_DIR . $this->_template;
         }
 
         /**
