@@ -10,8 +10,8 @@
     <meta charset="utf-8">
     <title><?= $this->getTitle() ?></title>
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="/assets/css/materialize.min.css" media="screen,projection"/>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link type="text/css" rel="stylesheet" href="/web/css/materialize.min.css" media="screen,projection"/>
+    <link rel="stylesheet" href="/web/css/style.css">
 </head>
 <body class="blue-grey lighten-5">
 <div class="container">
@@ -29,7 +29,7 @@
     </div>
 </div>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="/assets/js/materialize.min.js"></script>
+<script type="text/javascript" src="/web/js/materialize.min.js"></script>
 <script> <?=$this->getForm()->getInitMaterial()?> </script>
 </body>
 </html>
